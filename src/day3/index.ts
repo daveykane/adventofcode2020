@@ -1,11 +1,7 @@
 const getHits = ([x, y]: number[], grid: string[]): number => {
-  let xIndex = 0;
   let hits = 0;
-  const len = grid[0].length - 1;
-
-  for (let i = y; i < grid.length; i += y) {
-    xIndex = xIndex + x > len ? xIndex + x - len - 1 : xIndex + x;
-    hits = grid[i][xIndex] === "#" ? hits + 1 : hits;
+  for (let i = y, xIndex = x; i < grid.length; i += y, xIndex += x) {
+    hits = grid[i][xIndex % grid[0].length] === "#" ? hits + 1 : hits;
   }
 
   return hits;
