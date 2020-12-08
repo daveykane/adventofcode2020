@@ -18,17 +18,13 @@ const getInstructions = (input: string[]): IInstruction[] => {
   });
 };
 
-const getNewInstructions = (
-  instructions: IInstruction[],
-  index: number,
-): IInstruction[] => {
-  const newOp = instructions[index].op === "nop" ? "jmp" : "nop";
+const getNewInstructions = (instructions: IInstruction[], index: number) => {
   const newInstructions = deepClone(instructions);
-  newInstructions[index].op = newOp;
+  newInstructions[index].op = instructions[index].op === "nop" ? "jmp" : "nop";
   return newInstructions;
 };
 
-const runProgram = (instructions: IInstruction[]) => {
+const runProgram = (instructions: IInstruction[]): IProgramOutput => {
   let value = 0;
   let success = true;
 
@@ -39,9 +35,7 @@ const runProgram = (instructions: IInstruction[]) => {
     value += op === "acc" ? arg : 0;
     i += op === "jmp" ? arg - 1 : 0;
 
-    const { executed } = instructions[i + 1] || {};
-
-    if (executed) {
+    if ((instructions[i + 1] || {}).executed) {
       success = false;
       break;
     }
