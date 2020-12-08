@@ -1,5 +1,5 @@
 interface IBags {
-  [key: string]: IBagContents[];
+  [name: string]: IBagContents[];
 }
 
 interface IBagContents {
@@ -9,9 +9,9 @@ interface IBagContents {
 
 const myBag = "shiny gold";
 
-const processContents = (child: string): IBagContents => {
+const processContents = (contents: string): IBagContents => {
   const regex = /^(?<amount>\d+) (?<name>.+) bag.*$/;
-  const { groups = {} } = (child.match(regex) ?? {});
+  const { groups = {} } = (contents.match(regex) ?? {});
   return { amount: Number(groups.amount), name: groups.name };
 };
 
