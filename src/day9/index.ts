@@ -1,18 +1,3 @@
-const getPreamble = (input: number[], pointer: number, length: number) => {
-  const list = input.slice(pointer, pointer + length);
-  const set = new Set();
-
-  for (let i = 0; i < list.length; i++) {
-    for (let j = 0; j < list.length; j++) {
-      if (i !== j) {
-        set.add(list[i] + list[j]);
-      }
-    }
-  }
-
-  return [...set];
-};
-
 const getContiguousSet = (input: number[], target: number) => {
   for (let i = 0; i < input.length; i++) {
     const set = [input[i]];
@@ -29,7 +14,8 @@ const getContiguousSet = (input: number[], target: number) => {
 
 export const part1 = (input: number[], length: number): number | undefined => {
   return input.slice(length).find((value, index) => {
-    return !getPreamble(input, index, length).includes(value);
+    const preamble = input.slice(index, index + length);
+    return preamble.every((number) => !preamble.includes(value - number));
   });
 };
 
