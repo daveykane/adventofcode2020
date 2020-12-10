@@ -7,3 +7,4 @@ export const getInput = async (
 };
 
 export const deepClone = (value: object) => JSON.parse(JSON.stringify(value));
+export const numbericalSort = (arr: number[]) => arr.sort((a, b) => a - b);
