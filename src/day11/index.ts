@@ -44,7 +44,7 @@ const move = (layout: string[], limit: number, canSee: boolean): number => {
 
       row.split("").forEach((seat, x) => {
         newLayout[y] += getNewSeat(seat, search(layout, [y, x], canSee), limit);
-        if (seat === "#") occupiedSeats++;
+        if (newLayout[y][x] === "#") occupiedSeats++;
       });
     });
 
