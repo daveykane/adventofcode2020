@@ -8,10 +8,10 @@ export const part1 = (instructions: string[]): number => {
   return instructions.reduce((distance: number, command: string) => {
     const [action, value] = [command.slice(0, 1), Number(command.slice(1))];
 
-    if (action === "R" || action === "L") {
-      currentHeading += action === "R" ? value : -value;
-      if (currentHeading >= 360) currentHeading -= 360;
-      else if (currentHeading < 0) currentHeading += 360;
+    if (action === "R") {
+      currentHeading = (currentHeading + value) % 360;
+    } else if (action === "L") {
+      currentHeading = (((currentHeading - value) % 360) + 360) % 360;
     } else {
       const heading = action === "F" ? currentHeading : directions[action];
       ship[0] += headings[heading][0] * value;
