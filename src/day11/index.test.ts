@@ -4,7 +4,7 @@ import { getInput } from "../utils/index.ts";
 
 const { assertEquals } = Rhum.asserts;
 
-Rhum.testPlan("Advent of Code - Day Nine", () => {
+Rhum.testPlan("Advent of Code - Day Eleven", () => {
   Rhum.testSuite("Part One", () => {
     Rhum.testCase("should get 37", async () => {
       const input = (await getInput("day11", "input_example")).split("\n");
