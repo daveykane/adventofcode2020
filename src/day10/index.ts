@@ -1,7 +1,7 @@
-import { numbericalSort } from "../utils/index.ts";
+import { numericalSort } from "../utils/index.ts";
 
 const getJoltageJumps = (input: number[]): string => {
-  const adapters = numbericalSort(input);
+  const adapters = numericalSort(input);
   const list = [0, ...adapters, Math.max(...adapters) + 3];
   return list.reduce((acc, val, index) => {
     return !list[index - 1] ? acc : acc + (val - list[index - 1]).toString();
