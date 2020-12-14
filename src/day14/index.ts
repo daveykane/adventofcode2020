@@ -1,78 +1,51 @@
-export const part1 = (input: string[]): number => {
-  let mask: string[];
-  const memory: number[] = [];
+export const part1 = (program: string[][]): number => {
+  let zeroVariantMask: bigint;
+  let oneVariantMask: bigint;
+  const memory = new Map();
 
-  input.forEach((line) => {
-    const [cmd, val] = line.split(" = ");
-
-    if (cmd === "mask") {
-      mask = val.split("").reverse();
-    } else {
-      const [, position] = cmd.match(/^mem\[(\d+)\]$/) ?? [];
-
-      if (position) {
-        const number = Number(val);
-        memory[Number(position)] = mask.reduce((a, v, i) => {
-          if (v === "X") {
-            return a;
-          }
-
-          const binary = number.toString(2).split("").reverse();
-          const bit = Math.pow(2, i);
-
-          if ((binary[i] ?? "0") === mask[i]) {
-            return a;
-          }
-
-          return v === "0" ? a - bit : a + bit;
-        }, number);
-      }
+  program.forEach(([item, value]) => {
+    if (item === "mask") {
+      zeroVariantMask = BigInt(parseInt(value.replaceAll("X", "0"), 2));
+      oneVariantMask = BigInt(parseInt(value.replaceAll("X", "1"), 2));
+      return;
     }
+
+    const newValue = (BigInt(Number(value)) | zeroVariantMask) & oneVariantMask;
+
+    memory.set(Number(item.slice(4, -1)), Number(newValue));
   });
 
-  return memory.reduce((sum, value) => sum + value, 0);
+  return [...memory.values()].reduce((sum, value) => sum + value, 0);
 };
 
-export const part2 = (input: string[]): number => {
-  let mask: string[];
-  const memory: any = {};
-
-  input.forEach((line) => {
-    const [cmd, val] = line.split(" = ");
-
-    if (cmd === "mask") {
-      mask = val.split("").reverse();
-    } else {
-      const [, position] = cmd.match(/^mem\[(\d+)\]$/) ?? [];
-
-      if (position) {
-        let addresses: number[] = [0];
-        const pos = Number(position);
-        const binary = pos.toString(2).split("").reverse();
-
-        const newBinary = mask.map((bit, i) => {
-          return bit !== "0" ? bit : binary[i] ?? "0";
-        });
-
-        newBinary.forEach((bit, index) => {
-          if (bit !== "0") {
-            const bitValue = Math.pow(2, index);
-            const newAddresses = addresses.map((address) => address + bitValue);
-
-            if (bit === "1") {
-              addresses = newAddresses;
-            } else if (bit === "X") {
-              addresses = addresses.concat(newAddresses);
-            }
-          }
-        });
-
-        addresses.forEach((address) => {
-          memory[address] = Number(val);
-        });
-      }
+export const part2 = (program: string[][]): number => {
+  let bitMask: string[];
+  const memory = new Map();
+  const getPermutations = (binary: string): string[] => {
+    if (!binary.includes("X")) {
+      return [binary];
     }
+
+    const zeroVariant = binary.replace("X", "0");
+    const oneVariant = binary.replace("X", "1");
+    return [...getPermutations(zeroVariant), ...getPermutations(oneVariant)];
+  };
+
+  program.forEach(([item, value]) => {
+    if (item === "mask") {
+      bitMask = value.split("");
+      return;
+    }
+
+    const address = Number(item.slice(4, -1)).toString(2).padStart(36, "0");
+    const addressMasked = bitMask.map((bit, index) => {
+      return bit === "0" ? address[index] : bit;
+    }).join("");
+
+    getPermutations(addressMasked).forEach((permutation: string) => {
+      memory.set(parseInt(permutation, 2), Number(value));
+    });
   });
 
-  return Object.keys(memory).reduce((sum, key) => sum + memory[key], 0);
+  return [...memory.values()].reduce((sum, value) => sum + value, 0);
 };
