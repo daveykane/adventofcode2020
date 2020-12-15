@@ -1,20 +1,18 @@
 const playGame = (numbers: number[], turns: number): number => {
-  const tracker = new Map();
+  let last = 0;
+  let i = numbers.length + 1;
+  const tracker = Array(turns).fill(-1);
 
-  numbers.forEach((number, index) => {
-    tracker.set(number, { last: index + 1, prev: null });
-    tracker.set("last", number);
-  });
+  numbers.forEach((number, index) => tracker[number] = index);
 
-  for (let i = tracker.size; i <= turns; i++) {
-    const { last, prev } = tracker.get(tracker.get("last"));
-    const value = prev ? last - prev : 0;
-    const isNew = tracker.get(value);
-    tracker.set(value, { last: i, prev: isNew ? isNew.last : null });
-    tracker.set("last", value);
+  while (i < turns) {
+    const lastSpokenIndex = tracker[last];
+    tracker[last] = i - 1;
+    last = lastSpokenIndex === -1 ? 0 : i - 1 - lastSpokenIndex;
+    i++;
   }
 
-  return tracker.get("last");
+  return last;
 };
 
 export const part1 = (numbers: number[]): number => playGame(numbers, 2020);
